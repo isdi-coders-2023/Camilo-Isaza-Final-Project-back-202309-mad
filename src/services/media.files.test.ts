@@ -42,4 +42,4 @@ describe('Given MediaFiles class', () => {
     });
   });
 });
- */
+*/
