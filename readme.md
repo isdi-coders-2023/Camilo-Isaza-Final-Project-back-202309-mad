@@ -13,7 +13,7 @@ Filtros (en el propio listado, que filtre sin cambiar de página)
 Login y registro de usuario
 Feedbacks al usuario
 Gestión de errores
-Cloudinary (o similar) para los archivos binarios
+Cloudinary (o similar) para los archivos binarios.
 Requisitos Frontend:
 TypeScript
 React + gestión del estado con Redux
