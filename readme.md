@@ -64,4 +64,4 @@ Trello (backlog completo)
 Procedimiento
 users ( register / login) -> back y front
 items (crud // filtros, paginación) -> back y front
-Presentación: jueves 21/12/2023
+Presentación: jueves 21/12/2023.
