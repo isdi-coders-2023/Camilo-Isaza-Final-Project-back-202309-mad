@@ -15,4 +15,5 @@ export type User = LoginUser & {
   number: string;
   address: string;
   orders: ShopCar[];
+  role: 'Admin' | 'User';
 };
