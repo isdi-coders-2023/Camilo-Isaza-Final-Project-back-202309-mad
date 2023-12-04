@@ -9,6 +9,7 @@
     "start:dev": "cross-env PORT=2700 DEBUG=W7E* nodemon dist/index.js",
     "build": "tsc -w",
     "build:render": "tsc",
+    "test:prod": "jest --watchAll --watchAll=false --coverage --passWithNoTests",
     "test": "jest --watchAll --coverage",
     "api": "json-server --watch ./api/db.json",
     "prepare": "husky install"
