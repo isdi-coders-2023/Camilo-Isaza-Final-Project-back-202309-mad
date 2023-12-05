@@ -28,9 +28,7 @@ export class UsersController extends Controller<User> {
           email: result.email,
         }),
       };
-      res.status(202);
-      res.statusMessage = 'Accepted';
-      res.json(data);
+      res.status(202).send('Accepted').json(data);
     } catch (error) {
       next(error);
     }
