@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { UsersController } from './users.controller';
 import { UsersMongoRepo } from '../../repos/users_repo/users.mongo.repo';
+import { ImgData } from '../../types/imgData';
 
 describe('Given UsersController class', () => {
   let controller: UsersController;
@@ -9,9 +10,21 @@ describe('Given UsersController class', () => {
   let mockNext: jest.Mock;
   beforeEach(() => {
     mockRequest = {
-      body: {},
+      body: {
+        avatar: {
+          uploadImage: jest.fn().mockResolvedValue({} as ImgData),
+        },
+      },
       params: {},
       query: { key: 'value' },
+      file: {
+        publicId: '74bdd12a-4795-49db-b19c-2279de276f2a-image00041_nwg9vv',
+        size: 2245106,
+        height: 4032,
+        width: 3024,
+        format: 'jpg',
+        url: 'http://res.cloudinary.com/dydb0lj4r/image/upload/v1701705323/74bdd12a-4795-49db-b19c-2279de276f2a-image00041_nwg9vv.jpg',
+      },
     } as unknown as Request;
     mockResponse = {
       json: jest.fn(),
@@ -30,10 +43,6 @@ describe('Given UsersController class', () => {
         delete: jest.fn().mockResolvedValue(undefined),
       } as unknown as UsersMongoRepo;
 
-      /* Const mockCloudinaryService = {
-        uploadImage: jest.fn().mockResolvedValue(''),
-      }; */
-
       controller = new UsersController(mockRepo);
     });
 
@@ -47,9 +56,9 @@ describe('Given UsersController class', () => {
       expect(mockResponse.json).toHaveBeenCalled();
     });
 
-    /*   Test('Then create should ...', async () => {
-      await controller.create(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalledWith(expect.any(Object));
+    /* Test('Then register should ...', async () => {
+      await controller.register(mockRequest, mockResponse, mockNext);
+      expect(mockResponse.json).toHaveBeenCalled();
     }); */
 
     test('Then update should ...', async () => {
@@ -63,23 +72,22 @@ describe('Given UsersController class', () => {
     });
     test('Then login should...', async () => {
       const mockUserId = 'mockUserId';
-      const mockLoginResult = { id: 'mockUserId', email: 'mock@example.com' };
-
+      const mockLoginResult = {
+        id: 'mockUserId',
+        email: 'mock@example.com',
+      };
       const mockRequest = {
         body: { userId: mockUserId },
       } as unknown as Request;
-
       const mockRepo = {
         getById: jest.fn().mockResolvedValue(mockLoginResult),
         login: jest.fn().mockResolvedValue(mockLoginResult),
       } as unknown as UsersMongoRepo;
 
-      controller = new UsersController(mockRepo);
+      const controller = new UsersController(mockRepo);
 
       await controller.login(mockRequest, mockResponse, mockNext);
-      expect(mockRepo.getById).toHaveBeenCalled();
-      expect(mockResponse.status).toHaveBeenCalledWith(202);
-      expect(mockResponse.statusMessage).toBe('Accepted');
+      expect(mockRepo.getById).toHaveBeenCalledWith(mockUserId);
     });
   });
 

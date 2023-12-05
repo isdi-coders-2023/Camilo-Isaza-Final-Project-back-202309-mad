@@ -33,17 +33,6 @@ export abstract class Controller<T extends { id: unknown }> {
     }
   }
 
-  async create(req: Request, res: Response, next: NextFunction) {
-    try {
-      const result = await this.repo.create(req.body);
-      res.status(201);
-      res.statusMessage = 'Created';
-      res.json(result);
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async update(req: Request, res: Response, next: NextFunction) {
     try {
       debug('hola');

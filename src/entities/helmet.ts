@@ -7,6 +7,6 @@ export type Helmet = {
   inventory: number;
   price: number;
   category: string;
-  images: ImgData[];
+  images: ImgData;
   orders: ShopCar[];
 };
