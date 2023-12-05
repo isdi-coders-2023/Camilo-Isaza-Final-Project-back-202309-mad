@@ -12,28 +12,23 @@ export class AuthInterceptor {
   }
 
   authorization(req: Request, res: Response, next: NextFunction) {
-    debug('hola');
     try {
-      debug('hola');
       const tokenHeader = req.get('Authorization');
       if (!tokenHeader?.startsWith('Bearer'))
         throw new HttpError(401, 'Unauthorized');
-      debug('hola');
+
       const token = tokenHeader.split(' ')[1];
       const tokenPayload = Auth.verifyAndGetPayload(token);
       req.body.userId = tokenPayload.id;
 
       next();
     } catch (error) {
-      debug('hola');
       next(error);
     }
   }
 
   async authentication(req: Request, res: Response, next: NextFunction) {
-    debug('hola');
     try {
-      debug('hola');
       const userID = req.body.id;
       const userToAddID = req.params.id;
       const repoUsers = new UsersMongoRepo();
@@ -42,7 +37,6 @@ export class AuthInterceptor {
         throw new HttpError(401, 'Unauthorized', 'User not valid');
       next();
     } catch (error) {
-      debug('hola');
       next(error);
     }
   }

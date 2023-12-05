@@ -1,4 +1,5 @@
 import { ImgData } from '../types/imgData';
+import { ShopCar } from './shop_car';
 
 export type Helmet = {
   id: string;
@@ -6,5 +7,6 @@ export type Helmet = {
   inventory: number;
   price: number;
   category: string;
-  image: ImgData;
+  images: ImgData[];
+  orders: ShopCar[];
 };

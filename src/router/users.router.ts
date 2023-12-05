@@ -46,7 +46,5 @@ usersRouter.patch(
 usersRouter.delete(
   '/:id',
   interceptor.authorization.bind(interceptor),
-  interceptor.authentication.bind(interceptor),
-
   controller.delete.bind(controller)
 );

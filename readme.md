@@ -65,3 +65,9 @@ Procedimiento.
 users ( register / login) -> back y front
 items (crud // filtros, paginación) -> back y front
 Presentación: jueves 21/12/2023.
+
+DUDAD DE TESTIING:
+
+- userController: Search y porque no pasa en Sonar.
+- crypto
+- dbConnect

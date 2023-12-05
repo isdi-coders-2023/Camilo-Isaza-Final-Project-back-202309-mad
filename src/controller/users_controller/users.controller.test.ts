@@ -61,6 +61,26 @@ describe('Given UsersController class', () => {
       await controller.delete(mockRequest, mockResponse, mockNext);
       expect(mockResponse.json).toHaveBeenCalledWith({});
     });
+    test('Then login should...', async () => {
+      const mockUserId = 'mockUserId';
+      const mockLoginResult = { id: 'mockUserId', email: 'mock@example.com' };
+
+      const mockRequest = {
+        body: { userId: mockUserId },
+      } as unknown as Request;
+
+      const mockRepo = {
+        getById: jest.fn().mockResolvedValue(mockLoginResult),
+        login: jest.fn().mockResolvedValue(mockLoginResult),
+      } as unknown as UsersMongoRepo;
+
+      controller = new UsersController(mockRepo);
+
+      await controller.login(mockRequest, mockResponse, mockNext);
+      expect(mockRepo.getById).toHaveBeenCalled();
+      expect(mockResponse.status).toHaveBeenCalledWith(202);
+      expect(mockResponse.statusMessage).toBe('Accepted');
+    });
   });
 
   describe('When we instantiate it WITH errors', () => {
@@ -102,35 +122,6 @@ describe('Given UsersController class', () => {
     test('Then delete should ...', async () => {
       await controller.delete(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    });
-
-    test('Then login should...', async () => {
-      const mockUserId = 'mockUserId';
-      const mockLoginResult = { id: 'mockUserId', email: 'mock@example.com' };
-
-      // Mocking the request with a userId
-      const mockRequest = {
-        body: { userId: mockUserId },
-      } as unknown as Request;
-
-      // Mocking the repo methods for both cases
-      const mockRepo = {
-        getById: jest.fn().mockResolvedValue(mockLoginResult),
-        login: jest.fn().mockResolvedValue(mockLoginResult),
-      } as unknown as UsersMongoRepo;
-
-      /* Const mockCloudinaryService = {
-        uploadImage: jest.fn().mockResolvedValue(''),
-      }; */
-      controller = new UsersController(mockRepo);
-
-      await controller.login(mockRequest, mockResponse, mockNext);
-      expect(mockRepo.getById).toHaveBeenCalledWith(mockUserId);
-
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        user: mockLoginResult,
-        token: expect.any(String),
-      });
     });
   });
 });

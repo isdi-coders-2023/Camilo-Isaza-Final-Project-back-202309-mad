@@ -35,7 +35,6 @@ export class MediaFiles {
 
       return imgData;
     } catch (err) {
-      // Type assertion to let TypeScript know that err is of type Error
       const error = err as Error;
       throw new HttpError(
         406,
