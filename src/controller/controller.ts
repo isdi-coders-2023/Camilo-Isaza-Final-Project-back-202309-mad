@@ -2,7 +2,7 @@
 import { Repository } from '../repos/repo';
 import { NextFunction, Request, Response } from 'express';
 import { MediaFiles } from '../services/media.files.js';
-import { HttpError } from '../types/http.error.js';
+
 import createDebug from 'debug';
 
 const debug = createDebug('W7E:experiments:controller');

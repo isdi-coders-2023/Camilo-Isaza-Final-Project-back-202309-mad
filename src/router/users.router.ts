@@ -18,32 +18,40 @@ const fileInterceptor = new FileInterceptor();
 usersRouter.get(
   '/',
   interceptor.authorization.bind(interceptor),
+  interceptor.isAdmin.bind(interceptor),
   controller.getAll.bind(controller)
 );
 
 usersRouter.get(
   '/:id',
   interceptor.authorization.bind(interceptor),
+  interceptor.isAdmin.bind(interceptor),
   controller.getById.bind(controller)
 );
 
 usersRouter.post(
   '/register',
+  interceptor.isAdmin.bind(interceptor),
   fileInterceptor.singleFileStore('avatar').bind(fileInterceptor),
   controller.register.bind(controller)
 );
 
-usersRouter.post('/login', controller.login.bind(controller));
+usersRouter.post(
+  '/login',
+  interceptor.isAdmin.bind(interceptor),
+  controller.login.bind(controller)
+);
 
 usersRouter.patch(
   '/:id',
   interceptor.authorization.bind(interceptor),
-
+  interceptor.isAdmin.bind(interceptor),
   controller.update.bind(controller)
 );
 
 usersRouter.delete(
   '/:id',
   interceptor.authorization.bind(interceptor),
+  interceptor.isAdmin.bind(interceptor),
   controller.delete.bind(controller)
 );
