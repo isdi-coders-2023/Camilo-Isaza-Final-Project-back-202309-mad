@@ -13,7 +13,7 @@ Filtros (en el propio listado, que filtre sin cambiar de página)
 Login y registro de usuario
 Feedbacks al usuario
 Gestión de errores
-Cloudinary (o similar) para los archivos binarios
+Cloudinary (o similar) para los archivos binarios.
 Requisitos Frontend:
 TypeScript
 React + gestión del estado con Redux
@@ -65,3 +65,9 @@ Procedimiento.
 users ( register / login) -> back y front
 items (crud // filtros, paginación) -> back y front
 Presentación: jueves 21/12/2023.
+
+DUDAD DE TESTIING:
+
+- userController: Search y porque no pasa en Sonar.
+- crypto
+- dbConnect
