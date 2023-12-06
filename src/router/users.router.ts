@@ -30,8 +30,7 @@ usersRouter.get(
 usersRouter.post(
   '/register',
   fileInterceptor.singleFileStore('avatar').bind(fileInterceptor),
-
-  controller.create.bind(controller)
+  controller.register.bind(controller)
 );
 
 usersRouter.post('/login', controller.login.bind(controller));
@@ -39,7 +38,7 @@ usersRouter.post('/login', controller.login.bind(controller));
 usersRouter.patch(
   '/:id',
   interceptor.authorization.bind(interceptor),
-  interceptor.authentication.bind(interceptor),
+
   controller.update.bind(controller)
 );
 
