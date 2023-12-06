@@ -11,5 +11,6 @@ export default {
     'src/app.ts',
     'src/index.ts',
     'src/router/users.router.ts',
+    'src/services/db.connect.ts',
   ],
 };
