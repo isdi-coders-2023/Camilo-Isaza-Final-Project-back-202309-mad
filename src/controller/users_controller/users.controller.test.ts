@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { UsersController } from './users.controller';
 import { UsersMongoRepo } from '../../repos/users_repo/users.mongo.repo';
-import { ImgData } from '../../types/imgData';
 
 describe('Given UsersController class', () => {
   let controller: UsersController;
@@ -10,21 +9,9 @@ describe('Given UsersController class', () => {
   let mockNext: jest.Mock;
   beforeEach(() => {
     mockRequest = {
-      body: {
-        avatar: {
-          uploadImage: jest.fn().mockResolvedValue({} as ImgData),
-        },
-      },
+      body: {},
       params: {},
       query: { key: 'value' },
-      file: {
-        publicId: '74bdd12a-4795-49db-b19c-2279de276f2a-image00041_nwg9vv',
-        size: 2245106,
-        height: 4032,
-        width: 3024,
-        format: 'jpg',
-        url: 'http://res.cloudinary.com/dydb0lj4r/image/upload/v1701705323/74bdd12a-4795-49db-b19c-2279de276f2a-image00041_nwg9vv.jpg',
-      },
     } as unknown as Request;
     mockResponse = {
       json: jest.fn(),
@@ -38,10 +25,10 @@ describe('Given UsersController class', () => {
         getAll: jest.fn().mockResolvedValue([{}]),
         getById: jest.fn().mockResolvedValue({}),
         search: jest.fn().mockResolvedValue([{}]),
-        create: jest.fn().mockResolvedValue({}),
+        register: jest.fn().mockResolvedValue({}),
         update: jest.fn().mockResolvedValue({}),
         delete: jest.fn().mockResolvedValue(undefined),
-      } as unknown as UsersMongoRepo;
+      } as unknown as jest.Mocked<UsersMongoRepo>;
 
       controller = new UsersController(mockRepo);
     });
@@ -55,11 +42,6 @@ describe('Given UsersController class', () => {
       await controller.getById(mockRequest, mockResponse, mockNext);
       expect(mockResponse.json).toHaveBeenCalled();
     });
-
-    /* Test('Then register should ...', async () => {
-      await controller.register(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalled();
-    }); */
 
     test('Then update should ...', async () => {
       await controller.update(mockRequest, mockResponse, mockNext);
@@ -89,6 +71,35 @@ describe('Given UsersController class', () => {
       await controller.login(mockRequest, mockResponse, mockNext);
       expect(mockRepo.getById).toHaveBeenCalledWith(mockUserId);
     });
+
+    test('Then register (create) should create a new user with valid input data and image file', async () => {
+      const mockRequest = {
+        file: {
+          path: 'valid/path/to/image.jpg',
+        },
+        body: {},
+      } as unknown as Request;
+
+      const mockNext = jest.fn();
+      const mockRepo = {
+        create: jest.fn(),
+      } as unknown as UsersMongoRepo;
+
+      const controller = new UsersController(mockRepo);
+      const mockImageData = { url: 'https://example.com/image.jpg' };
+      const mockCloudinaryService = {
+        uploadImage: jest.fn().mockResolvedValue(mockImageData),
+      };
+
+      controller.cloudinaryService = mockCloudinaryService;
+
+      await controller.register(mockRequest, mockResponse, mockNext);
+
+      expect(mockCloudinaryService.uploadImage).toHaveBeenCalledWith(
+        mockRequest.file?.path
+      );
+      expect(mockRequest.body.avatar).toBe(mockImageData);
+    });
   });
 
   describe('When we instantiate it WITH errors', () => {
@@ -116,11 +127,6 @@ describe('Given UsersController class', () => {
       await controller.getById(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenLastCalledWith(mockError);
     });
-
-    /*  Test('Then create should ...', async () => {
-      await controller.create(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    }); */
 
     test('Then update should ...', async () => {
       await controller.update(mockRequest, mockResponse, mockNext);

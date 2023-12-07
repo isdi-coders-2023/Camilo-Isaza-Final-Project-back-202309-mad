@@ -21,6 +21,8 @@ export class AuthInterceptor {
 
       req.body.userId = tokenPayload.id;
       req.body.tokenRole = tokenPayload.role;
+      console.log(req.body.userId);
+      console.log(req.body.userId);
       next();
     } catch (error) {
       next(error);
@@ -42,8 +44,8 @@ export class AuthInterceptor {
   }
 
   isAdmin(req: Request, res: Response, next: NextFunction) {
+    debug(req.body.tokenRole);
     try {
-      debug(req.body.tokenRole);
       if (req.body.tokenRole !== 'Admin')
         throw new HttpError(403, 'Forbidden', 'Not authorized');
       next();

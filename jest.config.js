@@ -8,9 +8,11 @@ export default {
   coveragePathIgnorePatterns: [
     'src/repos/repo.ts',
     'src/repos/users_repo/users.mongo.model.ts',
+    'src/repos/helmets_repo/helmets.model.mongo.ts',
     'src/app.ts',
     'src/index.ts',
     'src/router/users.router.ts',
+    'src/router/helmets.router.ts',
     'src/services/db.connect.ts',
   ],
 };

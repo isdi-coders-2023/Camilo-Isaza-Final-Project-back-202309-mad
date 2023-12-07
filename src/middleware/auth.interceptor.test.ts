@@ -1,67 +1,114 @@
-import { UsersMongoRepo } from '../repos/users_repo/users.mongo.repo';
-import { Auth } from '../services/auth';
+import { AuthInterceptor } from './auth.interceptor.js';
+import { Request, Response, NextFunction } from 'express';
+import { Auth } from '../services/auth.js';
+import { HttpError } from '../types/http.error.js';
+import { HelmetsMongoRepo } from '../repos/helmets_repo/helmets.repo.mongo';
 
-import { AuthInterceptor } from './auth.interceptor';
+jest.mock('../services/auth.js');
 
-jest.mock('../services/auth');
-jest.mock('../repos/users_repo/users.mongo.repo');
+describe('Given AuthInterceptor class', () => {
+  let authInterceptor: AuthInterceptor;
 
-describe('Given class auth interceptor', () => {
-  describe('When we call its methods', () => {
-    let authInterceptor: AuthInterceptor;
+  beforeEach(() => {
+    authInterceptor = new AuthInterceptor();
+  });
 
-    beforeEach(() => {
-      authInterceptor = new AuthInterceptor();
-    });
-
-    test('Then it should set userId and tokenRole when token is valid', async () => {
-      const mockPayload = { id: '1', role: 'Admin' as const, email: 'h@c' };
-      (Auth as jest.Mocked<typeof Auth>).verifyAndGetPayload.mockReturnValue(
-        mockPayload
-      );
+  describe('When we use authorization method', () => {
+    test('Then should set userId and tokenRole on the request body when Authorization header is valid', async () => {
       const req = {
-        get: jest.fn().mockReturnValue('Bearer validToken'),
+        get: jest.fn(() => 'Bearer validToken'),
         body: {},
-      } as any;
-      const res = {} as any;
-      const next = jest.fn();
+      } as unknown as Request;
+      const res = {} as Response;
+      const next = jest.fn() as NextFunction;
 
-      await authInterceptor.authorization(req, res, next);
+      const mockPayload = { id: 'userId123', role: 'user' };
+      (Auth.verifyAndGetPayload as jest.Mock).mockReturnValue(mockPayload);
 
-      expect(req.body.userId).toBe('1');
-      expect(req.body.tokenRole).toBe('Admin');
+      authInterceptor.authorization(req, res, next);
+
+      expect(Auth.verifyAndGetPayload).toHaveBeenCalledWith('validToken');
+      expect(mockPayload).toStrictEqual({ id: 'userId123', role: 'user' });
+      expect(next).toHaveBeenCalled();
     });
+    test('Then should call next with an HttpError when Authorization header is missing or invalid', async () => {
+      const req = {
+        get: jest.fn().mockReturnValue(null),
+        body: {},
+      } as unknown as Request;
+      const res = {} as Response;
+      const next = jest.fn() as NextFunction;
+
+      authInterceptor.authorization(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(HttpError));
+    });
+  });
+
+  describe('', () => {
+    test('should call next when tokenRole is "Admin"', () => {
+      const req = { body: { tokenRole: 'Admin' } } as Request;
+      const res = {} as Response;
+      const next = jest.fn() as NextFunction;
+
+      authInterceptor.isAdmin(req, res, next);
+
+      expect(next).toHaveBeenCalled();
+    });
+    test('should throw HttpError with status 403 when tokenRole is not "Admin"', () => {
+      const req = { body: { tokenRole: 'User' } } as Request;
+      const res = {} as Response;
+      const next = jest.fn() as NextFunction;
+
+      authInterceptor.isAdmin(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(HttpError));
+    });
+  });
+
+  describe('', () => {
     test('Then it should set userId and tokenRole when token is valid', async () => {
       const mockPayload = { id: '1', role: 'Admin' as const, email: 'h@c' };
       const getByIdMock = jest.fn().mockResolvedValue(mockPayload);
-      (UsersMongoRepo as jest.Mocked<typeof UsersMongoRepo>).prototype.getById =
-        getByIdMock;
+      (
+        HelmetsMongoRepo as jest.Mocked<typeof HelmetsMongoRepo>
+      ).prototype.getById = getByIdMock;
 
       const req = {
-        params: { id: '1' }, // Set the 'id' property in params
-        body: { userId: '1', tokenRole: 'Admin' }, // Set the 'id' property in body
+        params: { id: '1' },
+        body: { userId: '1', tokenRole: 'Admin' },
       } as any;
       const res = {} as any;
       const next = jest.fn();
 
       await authInterceptor.authentication(req, res, next);
 
-      console.log('req.body:', req.body);
-
       expect(req.body.userId).toBe('1');
       expect(req.body.tokenRole).toBe('Admin');
     });
 
-    test('should call next() if tokenRole is Admin', async () => {
+    test('Then should call next with an HttpError when user.id !== userID', async () => {
+      const mockPayload = { id: '2', role: 'Admin' as const, email: 'h@c' };
+
+      const getByIdMock = jest.fn().mockResolvedValue(mockPayload);
+
+      (
+        HelmetsMongoRepo as jest.Mocked<typeof HelmetsMongoRepo>
+      ).prototype.getById = getByIdMock;
+
       const req = {
-        body: { tokenRole: 'Admin' },
+        params: { id: '3' },
+        body: { userId: '1', tokenRole: 'Admin' },
       } as any;
+
       const res = {} as any;
-      const next = jest.fn();
+      const next = jest.fn() as NextFunction;
 
-      await authInterceptor.isAdmin(req, res, next);
+      console.log(req.params.id, req.body.userId);
 
-      expect(next).toHaveBeenCalled();
+      await authInterceptor.authentication(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(Error));
     });
   });
 });
