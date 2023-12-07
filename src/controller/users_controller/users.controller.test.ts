@@ -128,11 +128,6 @@ describe('Given UsersController class', () => {
       expect(mockNext).toHaveBeenLastCalledWith(mockError);
     });
 
-    /*  Test('Then create should ...', async () => {
-      await controller.create(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    }); */
-
     test('Then update should ...', async () => {
       await controller.update(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenLastCalledWith(mockError);

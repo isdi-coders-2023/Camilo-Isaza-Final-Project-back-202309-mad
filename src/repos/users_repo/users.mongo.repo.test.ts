@@ -2,7 +2,6 @@ import { UsersMongoRepo } from './users.mongo.repo';
 import { UserModel } from './users.mongo.model.js';
 import { Auth } from '../../services/auth.js';
 import { LoginUser, User } from '../../entities/user';
-/* Import { HttpError } from '../../types/http.error'; */
 
 jest.mock('./users.mongo.model.js');
 jest.mock('../../services/auth.js');

@@ -1,6 +1,5 @@
 import { HelmetsMongoRepo } from './helmets.repo.mongo';
 import { HelmetModel } from './helmets.model.mongo';
-
 import { Helmet } from '../../entities/helmet';
 import { HttpError } from '../../types/http.error';
 

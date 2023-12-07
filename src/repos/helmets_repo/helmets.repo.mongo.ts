@@ -4,6 +4,7 @@ import { Repository } from '../repo.js';
 import { HttpError } from '../../types/http.error.js';
 import createDebug from 'debug';
 import { UsersMongoRepo } from '../users_repo/users.mongo.repo.js';
+import crypto from 'crypto';
 
 const debug = createDebug('W7E:notes:mongo:repo');
 
