@@ -9,7 +9,7 @@ jest.mock('./helmets.model.mongo.js');
 describe('GivenUsersMongoRepo', () => {
   let repo: HelmetsMongoRepo;
   describe('When we instantiate it without errors', () => {
-    const exec = jest.fn().mockResolvedValue('Test');
+    const exec = jest.fn().mockResolvedValue('Test2');
     beforeEach(() => {
       const mockQueryMethod = jest.fn().mockReturnValue({
         exec,
@@ -31,26 +31,26 @@ describe('GivenUsersMongoRepo', () => {
       expect(result).toStrictEqual({});
     });
 
-    test('Then it should execute getAll', async () => {
-      const result = await repo.getAll();
+    test('Then it should execute method getAll', async () => {
+      const expected = await repo.getAll();
       expect(exec).toHaveBeenCalled();
-      expect(result).toBe('Test');
+      expect(expected).toBe('Test2');
     });
 
-    test('Then it should execute getById', async () => {
-      const result = await repo.getById('');
+    test('Then it should execute method getById', async () => {
+      const expected = await repo.getById('');
       expect(exec).toHaveBeenCalled();
-      expect(result).toBe('Test');
+      expect(expected).toBe('Test2');
     });
 
-    test('Then it should execute update', async () => {
-      const result = await repo.update('1', { id: '2' });
+    test('Then it should execute method update', async () => {
+      const expected = await repo.update('1', { id: '2' });
       expect(exec).toHaveBeenCalled();
-      expect(result).toBe('Test');
+      expect(expected).toBe('Test2');
     });
 
-    test('Then it should execute delete', async () => {
-      await repo.delete('1');
+    test('Then it should execute method delete', async () => {
+      await repo.delete('2');
       expect(exec).toHaveBeenCalled();
     });
   });

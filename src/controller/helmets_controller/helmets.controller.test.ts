@@ -4,20 +4,20 @@ import { HelmetsMongoRepo } from '../../repos/helmets_repo/helmets.repo.mongo';
 
 describe('Given UsersController class', () => {
   let controller: HelmetsController;
-  let mockRequest: Request;
-  let mockResponse: Response;
-  let mockNext: jest.Mock;
+  let mockRequestHelmets: Request;
+  let mockResponseHelmets: Response;
+  let mockNextHelmets: jest.Mock;
   beforeEach(() => {
-    mockRequest = {
+    mockRequestHelmets = {
       body: {},
       params: {},
       query: { key: 'value' },
     } as unknown as Request;
-    mockResponse = {
+    mockResponseHelmets = {
       json: jest.fn(),
       status: jest.fn(),
     } as unknown as Response;
-    mockNext = jest.fn();
+    mockNextHelmets = jest.fn();
   });
   describe('When we instantiate it without errors', () => {
     beforeEach(() => {
@@ -29,14 +29,14 @@ describe('Given UsersController class', () => {
     });
 
     test('Method newHelmet (create) should create a new helmet with valid input data and image file', async () => {
-      const mockRequest = {
+      const mockRequestHelmets = {
         file: {
           path: 'path',
         },
         body: {},
       } as unknown as Request;
 
-      const mockNext = jest.fn();
+      const mockNextHelmets = jest.fn();
       const mockRepo = {
         create: jest.fn(),
       } as unknown as HelmetsMongoRepo;
@@ -49,12 +49,16 @@ describe('Given UsersController class', () => {
 
       controller.cloudinaryService = mockCloudinaryService;
 
-      await controller.newHelmet(mockRequest, mockResponse, mockNext);
+      await controller.newHelmet(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
 
       expect(mockCloudinaryService.uploadImage).toHaveBeenCalledWith(
-        mockRequest.file?.path
+        mockRequestHelmets.file?.path
       );
-      expect(mockRequest.body.images).toBe(mockImageData);
+      expect(mockRequestHelmets.body.images).toBe(mockImageData);
     });
   });
 
@@ -70,8 +74,12 @@ describe('Given UsersController class', () => {
     });
 
     test('Then register (create) should throw an error', async () => {
-      await controller.newHelmet(mockRequest, mockResponse, mockNext);
-      expect(mockNext).toHaveBeenCalledWith(mockError);
+      await controller.newHelmet(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+      expect(mockNextHelmets).toHaveBeenCalledWith(mockError);
     });
   });
 });
