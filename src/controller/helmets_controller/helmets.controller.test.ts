@@ -22,7 +22,7 @@ describe('Given UsersController class', () => {
   describe('When we instantiate it without errors', () => {
     beforeEach(() => {
       const mockRepo = {
-        register: jest.fn().mockResolvedValue({}),
+        create: jest.fn().mockResolvedValue({}),
       } as unknown as jest.Mocked<HelmetsMongoRepo>;
 
       controller = new HelmetsController(mockRepo);
@@ -63,7 +63,6 @@ describe('Given UsersController class', () => {
     beforeEach(() => {
       mockError = new Error('Invalid Multer file');
       const mockRepo = {
-        login: jest.fn().mockRejectedValue(mockError),
         create: jest.fn().mockRejectedValue(mockError),
       } as unknown as HelmetsMongoRepo;
 

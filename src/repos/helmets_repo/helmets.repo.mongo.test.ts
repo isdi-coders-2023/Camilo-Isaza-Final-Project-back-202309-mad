@@ -55,15 +55,15 @@ describe('GivenUsersMongoRepo', () => {
   });
 
   describe('When we instantiate it with errors', () => {
-    const exec = jest.fn().mockResolvedValue(null);
+    const excError = jest.fn().mockResolvedValue(null);
     beforeEach(() => {
-      const mockQueryMethod = jest.fn().mockReturnValue({
-        exec,
+      const mockQueryMethodError = jest.fn().mockReturnValue({
+        excError,
       });
 
-      HelmetModel.findByIdAndDelete = mockQueryMethod;
-      HelmetModel.findById = mockQueryMethod;
-      HelmetModel.findByIdAndUpdate = mockQueryMethod;
+      HelmetModel.findByIdAndDelete = mockQueryMethodError;
+      HelmetModel.findById = mockQueryMethodError;
+      HelmetModel.findByIdAndUpdate = mockQueryMethodError;
 
       repo = new HelmetsMongoRepo();
     });
