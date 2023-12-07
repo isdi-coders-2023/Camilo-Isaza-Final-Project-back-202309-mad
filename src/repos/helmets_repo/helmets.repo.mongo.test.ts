@@ -1,5 +1,6 @@
 import { HelmetsMongoRepo } from './helmets.repo.mongo';
 import { HelmetModel } from './helmets.model.mongo';
+
 import { Helmet } from '../../entities/helmet';
 import { HttpError } from '../../types/http.error';
 
@@ -55,15 +56,15 @@ describe('GivenUsersMongoRepo', () => {
   });
 
   describe('When we instantiate it with errors', () => {
-    const excError = jest.fn().mockResolvedValue(null);
+    const exec = jest.fn().mockResolvedValue(null);
     beforeEach(() => {
-      const mockQueryMethodError = jest.fn().mockReturnValue({
-        excError,
+      const mockQueryMethod2 = jest.fn().mockReturnValue({
+        exec,
       });
 
-      HelmetModel.findByIdAndDelete = mockQueryMethodError;
-      HelmetModel.findById = mockQueryMethodError;
-      HelmetModel.findByIdAndUpdate = mockQueryMethodError;
+      HelmetModel.findByIdAndDelete = mockQueryMethod2;
+      HelmetModel.findById = mockQueryMethod2;
+      HelmetModel.findByIdAndUpdate = mockQueryMethod2;
 
       repo = new HelmetsMongoRepo();
     });
