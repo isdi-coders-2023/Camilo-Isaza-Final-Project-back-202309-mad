@@ -16,14 +16,31 @@ const interceptor = new AuthInterceptor();
 const fileInterceptor = new FileInterceptor();
 
 helmetsRouter.get(
+  '/category/:category',
+  controller.getHelmetsByCategory.bind(controller)
+);
+
+helmetsRouter.get(
+  '/initialCategories',
+  controller.getInitialCategoriesWithHelmets.bind(controller)
+);
+
+helmetsRouter.get(
+  '/helmetsByCategories',
+  controller.getHelmetsByCategories.bind(controller)
+);
+
+helmetsRouter.get('/moreHelmets', controller.getMoreHelmets.bind(controller));
+
+helmetsRouter.get(
   '/',
-  interceptor.authorization.bind(interceptor),
+
   controller.getAll.bind(controller)
 );
 
 helmetsRouter.get(
   '/:id',
-  interceptor.authorization.bind(interceptor),
+
   controller.getById.bind(controller)
 );
 
@@ -44,6 +61,6 @@ helmetsRouter.patch(
 helmetsRouter.delete(
   '/:id',
   interceptor.authorization.bind(interceptor),
-  /*   Interceptor.isAdmin.bind(interceptor), */
+  interceptor.isAdmin.bind(interceptor),
   controller.delete.bind(controller)
 );

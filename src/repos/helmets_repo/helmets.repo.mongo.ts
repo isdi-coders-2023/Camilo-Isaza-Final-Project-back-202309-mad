@@ -49,4 +49,49 @@ export class HelmetsMongoRepo implements Repository<Helmet> {
       throw new HttpError(404, 'Not Found', 'Delete not possible');
     }
   }
+
+  async getCategoriesWithHelmets(): Promise<string[]> {
+    const helmets = await HelmetModel.find().exec();
+    const categoriesWithHelmets = Array.from(
+      new Set(helmets.map((helmet) => helmet.category))
+    );
+    return categoriesWithHelmets;
+  }
+
+  async getHelmetsByCategory(category: string): Promise<Helmet[]> {
+    const helmetsInCategory = await HelmetModel.find({ category }).exec();
+    return helmetsInCategory;
+  }
+
+  async getInitialCategories(): Promise<string[]> {
+    const allCategories = [
+      'SK2',
+      'SK3',
+      'SK4',
+      'SK5',
+      'SK6',
+      'SK7',
+      'SK8',
+      'SK9',
+      'SK10',
+    ];
+
+    const initialCategories = await HelmetModel.find({
+      category: { $in: allCategories },
+    })
+      .sort({ category: 1 })
+      .distinct('category')
+      .exec();
+
+    const firstTwoCategories = initialCategories.slice(0, 2);
+
+    return firstTwoCategories;
+  }
+
+  async getHelmetsByCategories(categories: string[]): Promise<Helmet[]> {
+    const helmets = await HelmetModel.find({
+      category: { $in: categories },
+    }).exec();
+    return helmets;
+  }
 }

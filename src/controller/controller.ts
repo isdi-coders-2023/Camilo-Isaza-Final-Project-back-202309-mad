@@ -5,7 +5,7 @@ import { MediaFiles } from '../services/media.files.js';
 
 import createDebug from 'debug';
 
-const debug = createDebug('W7E:experiments:controller');
+const debug = createDebug('W7E:helmets:controller');
 
 export abstract class Controller<T extends { id: unknown }> {
   cloudinaryService: MediaFiles;
@@ -37,6 +37,7 @@ export abstract class Controller<T extends { id: unknown }> {
     try {
       debug('hola');
       const result = await this.repo.update(req.params.id, req.body);
+      debug(req.body);
       res.json(result);
     } catch (error) {
       next(error);

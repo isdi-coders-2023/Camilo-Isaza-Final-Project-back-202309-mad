@@ -53,6 +53,24 @@ describe('GivenUsersMongoRepo', () => {
       await repo.delete('2');
       expect(exec).toHaveBeenCalled();
     });
+
+    test('Then it should execute method getHelmetsByCategory', async () => {
+      const expected = await repo.getHelmetsByCategory('1');
+      expect(exec).toHaveBeenCalled();
+      expect(expected).toBe('Test2');
+    });
+
+    test('Then it should execute method getHelmetsByCategory', async () => {
+      const expected = await repo.getHelmetsByCategory('1');
+      expect(exec).toHaveBeenCalled();
+      expect(expected).toBe('Test2');
+    });
+
+    test('Then it should execute method getHelmetsByCategory', async () => {
+      const expected = await repo.getHelmetsByCategory('1');
+      expect(exec).toHaveBeenCalled();
+      expect(expected).toBe('Test2');
+    });
   });
 
   describe('When we instantiate it with errors', () => {

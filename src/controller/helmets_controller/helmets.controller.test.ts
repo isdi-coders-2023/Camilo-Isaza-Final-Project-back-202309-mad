@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { HelmetsController } from './helmets.controller';
 import { HelmetsMongoRepo } from '../../repos/helmets_repo/helmets.repo.mongo';
+import { Helmet } from '../../entities/helmet';
 
 describe('Given UsersController class', () => {
   let controller: HelmetsController;
@@ -9,9 +10,9 @@ describe('Given UsersController class', () => {
   let mockNextHelmets: jest.Mock;
   beforeEach(() => {
     mockRequestHelmets = {
-      body: {},
+      body: { loadedCategories: ['SK1', 'SK2'] },
       params: {},
-      query: { key: 'value' },
+      query: { key: 'value', categories: 'a,b,c' },
     } as unknown as Request;
     mockResponseHelmets = {
       json: jest.fn(),
@@ -23,6 +24,8 @@ describe('Given UsersController class', () => {
     beforeEach(() => {
       const mockRepo = {
         create: jest.fn().mockResolvedValue({}),
+        getAll: jest.fn().mockResolvedValue([{}]),
+        getHelmetsByCategory: jest.fn().mockResolvedValue([{} as Helmet]),
       } as unknown as jest.Mocked<HelmetsMongoRepo>;
 
       controller = new HelmetsController(mockRepo);
@@ -60,6 +63,92 @@ describe('Given UsersController class', () => {
       );
       expect(mockRequestHelmets.body.images).toBe(mockImageData);
     });
+
+    test('Then method getAllHelmets should be called ', async () => {
+      const mockNextHelmets = jest.fn();
+      const mockRepo = {
+        getAll: jest.fn().mockResolvedValue([{} as Helmet]),
+      } as unknown as HelmetsMongoRepo;
+
+      const controller = new HelmetsController(mockRepo);
+
+      await controller.getAllHelmets(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+
+      expect(mockRepo.getAll).toHaveBeenCalled();
+    });
+
+    test('Then method getHelmetsByCategory should be called ', async () => {
+      const mockNextHelmets = jest.fn();
+      const mockRepo = {
+        getHelmetsByCategory: jest.fn().mockResolvedValue([{} as Helmet]),
+      } as unknown as HelmetsMongoRepo;
+
+      const controller = new HelmetsController(mockRepo);
+
+      await controller.getHelmetsByCategory(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+
+      expect(mockRepo.getHelmetsByCategory).toHaveBeenCalled();
+    });
+
+    test('Then method getInitialCategoriesWithHelmets should be called ', async () => {
+      const mockNextHelmets = jest.fn();
+      const mockRepo = {
+        getInitialCategories: jest.fn().mockResolvedValue(['a']),
+      } as unknown as HelmetsMongoRepo;
+
+      const controller = new HelmetsController(mockRepo);
+
+      await controller.getInitialCategoriesWithHelmets(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+
+      expect(mockRepo.getInitialCategories).toHaveBeenCalled();
+    });
+
+    test('Then method getHelmetsByCategories should be called ', async () => {
+      const mockNextHelmets = jest.fn();
+      const mockRepo = {
+        getHelmetsByCategories: jest.fn().mockResolvedValue([{} as Helmet]),
+      } as unknown as HelmetsMongoRepo;
+
+      const controller = new HelmetsController(mockRepo);
+      await controller.getHelmetsByCategories(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+
+      expect(mockRepo.getHelmetsByCategories).toHaveBeenCalledWith(
+        expect.arrayContaining(['a', 'b', 'c'])
+      );
+    });
+
+    test('Then method getMoreHelmets should be called ', async () => {
+      const mockNextHelmets = jest.fn();
+      const mockRepo = {
+        getHelmetsByCategory: jest.fn().mockResolvedValue([{} as Helmet]),
+      } as unknown as HelmetsMongoRepo;
+
+      const controller = new HelmetsController(mockRepo);
+
+      await controller.getMoreHelmets(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+
+      expect(mockRepo.getHelmetsByCategory).toHaveBeenCalledWith('SK3');
+    });
   });
 
   describe('When we instantiate it with errors', () => {
@@ -68,6 +157,11 @@ describe('Given UsersController class', () => {
       mockError = new Error('Invalid Multer file');
       const mockRepo = {
         create: jest.fn().mockRejectedValue(mockError),
+        getAll: jest.fn().mockRejectedValue(mockError),
+        getHelmetsByCategory: jest.fn().mockRejectedValue(mockError),
+        getInitialCategoriesWithHelmets: jest.fn().mockRejectedValue(mockError),
+        getHelmetsByCategories: jest.fn().mockRejectedValue(mockError),
+        getMoreHelmets: jest.fn().mockRejectedValue(mockError),
       } as unknown as HelmetsMongoRepo;
 
       controller = new HelmetsController(mockRepo);
@@ -80,6 +174,51 @@ describe('Given UsersController class', () => {
         mockNextHelmets
       );
       expect(mockNextHelmets).toHaveBeenCalledWith(mockError);
+    });
+
+    test('Then getAllHelmets should throw an error', async () => {
+      await controller.getAllHelmets(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+      expect(mockNextHelmets).toHaveBeenCalledWith(expect.any(Error));
+    });
+
+    test('Then getHelmetsByCategory should throw an error', async () => {
+      await controller.getHelmetsByCategory(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+      expect(mockNextHelmets).toHaveBeenCalledWith(expect.any(Error));
+    });
+
+    test('Then getInitialCategoriesWithHelmets should throw an error', async () => {
+      await controller.getInitialCategoriesWithHelmets(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+      expect(mockNextHelmets).toHaveBeenCalledWith(expect.any(Error));
+    });
+
+    test('Then getHelmetsByCategories should throw an error', async () => {
+      await controller.getHelmetsByCategories(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+      expect(mockNextHelmets).toHaveBeenCalledWith(expect.any(Error));
+    });
+
+    test('Then getMoreHelmets should throw an error', async () => {
+      await controller.getMoreHelmets(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+      expect(mockNextHelmets).toHaveBeenCalledWith(expect.any(Error));
     });
   });
 });
