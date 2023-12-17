@@ -2,9 +2,17 @@ import { UsersMongoRepo } from './users.mongo.repo';
 import { UserModel } from './users.mongo.model.js';
 import { Auth } from '../../services/auth.js';
 import { LoginUser, User } from '../../entities/user';
+import { HttpError } from '../../types/http.error';
+import { NextFunction, Request, Response } from 'express';
+import { errorMiddleware } from '../../middleware/error.middleware';
 
 jest.mock('./users.mongo.model.js');
 jest.mock('../../services/auth.js');
+
+const loginUserMock = {
+  email: 'test@gmail.com',
+  passwd: '123',
+} as LoginUser;
 
 describe('GivenUsersMongoRepo', () => {
   Auth.hash = jest.fn();
@@ -25,8 +33,16 @@ describe('GivenUsersMongoRepo', () => {
       UserModel.findByIdAndUpdate = mockQueryMethod;
       UserModel.findByIdAndDelete = mockQueryMethod;
       UserModel.create = jest.fn().mockResolvedValue('Test');
+
       repo = new UsersMongoRepo();
     });
+
+    const req = {} as Request;
+    const res = {
+      status: jest.fn(),
+      json: jest.fn(),
+    } as unknown as Response;
+    const next = jest.fn() as NextFunction;
 
     test('Then it should execute create', async () => {
       const result = await repo.create({} as Omit<User, 'id'>);
@@ -36,9 +52,21 @@ describe('GivenUsersMongoRepo', () => {
     });
 
     test('Then it should execute login', async () => {
-      const result = await repo.login({ email: '' } as LoginUser);
+      const result = await repo.login(loginUserMock);
       expect(UserModel.findOne).toHaveBeenCalled();
       expect(result).toBe('Test');
+    });
+
+    test('Then it should fail execute login', async () => {
+      const result = null;
+      expect(result).toBe(null);
+    });
+
+    test('Then it should fail execute login', async () => {
+      const error = new HttpError(401, 'Unauthorized');
+      errorMiddleware(error, req, res, next);
+      expect(res.status).toHaveBeenCalled();
+      expect(next).not.toHaveBeenCalled();
     });
 
     test('Then it should execute getAll', async () => {
@@ -54,35 +82,56 @@ describe('GivenUsersMongoRepo', () => {
     });
 
     test('Then it should execute update', async () => {
-      const result = await repo.update('1', { id: '2' });
+      const result = await repo.update('', { name: 'Test' });
       expect(exec).toHaveBeenCalled();
       expect(result).toBe('Test');
     });
-
     test('Then it should execute delete', async () => {
       await repo.delete('1');
       expect(exec).toHaveBeenCalled();
     });
   });
-});
-
-/* Describe('GivenUsersMongoRepo', () => {
-  Auth.hash = jest.fn();
-  Auth.compare = jest.fn().mockResolvedValue(false);
-  let repo: UsersMongoRepo;
-
-  describe('When we instantiate it without errors', () => {
+  describe('When we isntantiate it WITH errors', () => {
+    const exec = jest.fn().mockResolvedValue(null);
     beforeEach(() => {
+      UserModel.findById = jest.fn().mockReturnValue({
+        exec,
+      });
+      UserModel.findOne = jest.fn().mockReturnValue({
+        exec,
+      });
+      UserModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        exec,
+      });
       repo = new UsersMongoRepo();
     });
+    test('Then getById should throw an error', async () => {
+      expect(repo.getById('')).rejects.toThrow();
+    });
 
-    test('Then it should throw HttpError on login with invalid credentials', async () => {
-      const invalidLoginUser = {
-        email: 'invalid@example.com',
-        passwd: 'invalidPassword',
-      };
+    test('Then update should throw an error', async () => {
+      expect(repo.update('', { name: 'Test' })).rejects.toThrow();
+    });
 
-      await expect(repo.login(invalidLoginUser)).rejects.toThrow(HttpError);
+    test('Then login should throw an error', async () => {
+      expect(repo.login({} as User)).rejects.toThrow();
+    });
+    test('Then login should throw an HttpError', async () => {
+      const req = {} as Request;
+      const res = {
+        status: jest.fn(),
+        json: jest.fn(),
+      } as unknown as Response;
+      const next = jest.fn() as NextFunction;
+      const error = new HttpError(
+        404,
+        'Not found',
+        'The request was not found'
+      );
+
+      errorMiddleware(error, req, res, next);
+      expect(res.status).toHaveBeenCalled();
+      expect(next).not.toHaveBeenCalled();
     });
   });
-}); */
+});

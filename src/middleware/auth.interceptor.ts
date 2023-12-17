@@ -21,8 +21,6 @@ export class AuthInterceptor {
 
       req.body.userId = tokenPayload.id;
       req.body.tokenRole = tokenPayload.role;
-      console.log(req.body.userId);
-      console.log(req.body.userId);
       next();
     } catch (error) {
       next(error);

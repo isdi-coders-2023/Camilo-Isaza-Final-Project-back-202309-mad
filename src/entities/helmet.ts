@@ -9,4 +9,5 @@ export type Helmet = {
   category: string;
   images: ImgData;
   orders: ShopCar[];
+  isFavorite: boolean;
 };

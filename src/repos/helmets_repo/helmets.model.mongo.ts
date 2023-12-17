@@ -35,6 +35,11 @@ const helmetsSchema = new Schema<Helmet>({
     },
     required: true,
   },
+  isFavorite: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
 
 helmetsSchema.set('toJSON', {
