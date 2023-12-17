@@ -81,6 +81,23 @@ describe('Given UsersController class', () => {
       expect(mockRepo.getAll).toHaveBeenCalled();
     });
 
+    test('Then method getFavoriteHelmets should be called ', async () => {
+      const mockNextHelmets = jest.fn();
+      const mockRepo = {
+        getHelmetsByFavorite: jest.fn().mockResolvedValue([{} as Helmet]),
+      } as unknown as HelmetsMongoRepo;
+
+      const controller = new HelmetsController(mockRepo);
+
+      await controller.getFavoriteHelmets(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+
+      expect(mockRepo.getHelmetsByFavorite).toHaveBeenCalled();
+    });
+
     test('Then method getHelmetsByCategory should be called ', async () => {
       const mockNextHelmets = jest.fn();
       const mockRepo = {
@@ -149,6 +166,23 @@ describe('Given UsersController class', () => {
 
       expect(mockRepo.getHelmetsByCategory).toHaveBeenCalledWith('SK3');
     });
+
+    test('Then method updateFavorite should be called ', async () => {
+      const mockNextHelmets = jest.fn();
+      const mockRepo = {
+        updateFavorite: jest.fn().mockResolvedValue({} as Helmet),
+      } as unknown as HelmetsMongoRepo;
+
+      const controller = new HelmetsController(mockRepo);
+
+      await controller.updateFavorite(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+
+      expect(mockRepo.updateFavorite).toHaveBeenCalled();
+    });
   });
 
   describe('When we instantiate it with errors', () => {
@@ -158,6 +192,7 @@ describe('Given UsersController class', () => {
       const mockRepo = {
         create: jest.fn().mockRejectedValue(mockError),
         getAll: jest.fn().mockRejectedValue(mockError),
+        getFavoriteHelmets: jest.fn().mockRejectedValue(mockError),
         getHelmetsByCategory: jest.fn().mockRejectedValue(mockError),
         getInitialCategoriesWithHelmets: jest.fn().mockRejectedValue(mockError),
         getHelmetsByCategories: jest.fn().mockRejectedValue(mockError),
@@ -194,6 +229,15 @@ describe('Given UsersController class', () => {
       expect(mockNextHelmets).toHaveBeenCalledWith(expect.any(Error));
     });
 
+    test('Then getFavoriteHelmets should throw an error', async () => {
+      await controller.getFavoriteHelmets(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+      expect(mockNextHelmets).toHaveBeenCalledWith(expect.any(Error));
+    });
+
     test('Then getInitialCategoriesWithHelmets should throw an error', async () => {
       await controller.getInitialCategoriesWithHelmets(
         mockRequestHelmets,
@@ -214,6 +258,15 @@ describe('Given UsersController class', () => {
 
     test('Then getMoreHelmets should throw an error', async () => {
       await controller.getMoreHelmets(
+        mockRequestHelmets,
+        mockResponseHelmets,
+        mockNextHelmets
+      );
+      expect(mockNextHelmets).toHaveBeenCalledWith(expect.any(Error));
+    });
+
+    test('Then updateFavorite should throw an error', async () => {
+      await controller.updateFavorite(
         mockRequestHelmets,
         mockResponseHelmets,
         mockNextHelmets

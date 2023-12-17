@@ -21,6 +21,11 @@ helmetsRouter.get(
 );
 
 helmetsRouter.get(
+  '/promotions',
+  controller.getFavoriteHelmets.bind(controller)
+);
+
+helmetsRouter.get(
   '/initialCategories',
   controller.getInitialCategoriesWithHelmets.bind(controller)
 );
@@ -30,7 +35,7 @@ helmetsRouter.get(
   controller.getHelmetsByCategories.bind(controller)
 );
 
-helmetsRouter.get('/moreHelmets', controller.getMoreHelmets.bind(controller));
+helmetsRouter.post('/moreHelmets', controller.getMoreHelmets.bind(controller));
 
 helmetsRouter.get(
   '/',
@@ -55,7 +60,15 @@ helmetsRouter.patch(
   '/:id',
   interceptor.authorization.bind(interceptor),
   interceptor.isAdmin.bind(interceptor),
+  fileInterceptor.singleFileStore('images').bind(fileInterceptor),
   controller.update.bind(controller)
+);
+
+helmetsRouter.patch(
+  '/:id/favorite',
+  interceptor.authorization.bind(interceptor),
+  interceptor.isAdmin.bind(interceptor),
+  controller.updateFavorite.bind(controller)
 );
 
 helmetsRouter.delete(

@@ -49,6 +49,12 @@ describe('GivenUsersMongoRepo', () => {
       expect(expected).toBe('Test2');
     });
 
+    test('Then it should execute method update', async () => {
+      const expected = await repo.updateFavorite('1', true);
+      expect(exec).toHaveBeenCalled();
+      expect(expected).toBe('Test2');
+    });
+
     test('Then it should execute method delete', async () => {
       await repo.delete('2');
       expect(exec).toHaveBeenCalled();
@@ -70,6 +76,34 @@ describe('GivenUsersMongoRepo', () => {
       const expected = await repo.getHelmetsByCategory('1');
       expect(exec).toHaveBeenCalled();
       expect(expected).toBe('Test2');
+    });
+
+    test('Then it should execute method getHelmetsByFavorite', async () => {
+      const expected = await repo.getHelmetsByFavorite();
+      expect(exec).toHaveBeenCalled();
+      expect(expected).toBe('Test2');
+    });
+
+    test('Then it should execute method getHelmetsByCategories', async () => {
+      const expected = await repo.getHelmetsByCategories(['1']);
+      expect(exec).toHaveBeenCalled();
+      expect(expected).toBe('Test2');
+    });
+
+    test('Then it should execute method getInitialCategories', async () => {
+      const mockFindResult = {
+        sort: jest.fn().mockReturnThis(),
+        distinct: jest.fn().mockReturnThis(),
+        exec: jest.fn().mockResolvedValue(['SK2', 'SK3']),
+      };
+
+      HelmetModel.find = jest.fn().mockReturnValue(mockFindResult);
+
+      const expected = await repo.getInitialCategories();
+      expect(mockFindResult.sort).toHaveBeenCalledWith({ category: 1 });
+      expect(mockFindResult.distinct).toHaveBeenCalledWith('category');
+      expect(mockFindResult.exec).toHaveBeenCalled();
+      expect(expected).toEqual(['SK2', 'SK3']);
     });
   });
 

@@ -50,6 +50,15 @@ export class HelmetsController extends Controller<Helmet> {
     }
   }
 
+  async getFavoriteHelmets(req: Request, res: Response, next: NextFunction) {
+    try {
+      const favoriteHelmets = await this.repo.getHelmetsByFavorite();
+      res.json(favoriteHelmets);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async getInitialCategoriesWithHelmets(
     req: Request,
     res: Response,
@@ -143,5 +152,18 @@ export class HelmetsController extends Controller<Helmet> {
     return allCategories.filter(
       (category) => !loadedCategories.includes(category)
     );
+  }
+
+  async updateFavorite(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await this.repo.updateFavorite(
+        req.params.id,
+        req.body.isFavorite
+      );
+
+      res.json(result);
+    } catch (error) {
+      next(error);
+    }
   }
 }

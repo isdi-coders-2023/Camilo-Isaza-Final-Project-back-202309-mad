@@ -35,11 +35,26 @@ export class HelmetsMongoRepo implements Repository<Helmet> {
     return result;
   }
 
-  async update(id: string, updatedItem: Partial<Helmet>): Promise<Helmet> {
+  async update(
+    id: Helmet['id'],
+    updatedItem: Partial<Helmet>
+  ): Promise<Helmet> {
     const result = await HelmetModel.findByIdAndUpdate(id, updatedItem, {
       new: true,
     }).exec();
     if (!result) throw new HttpError(404, 'Not Found', 'Update not possible');
+    return result;
+  }
+
+  async updateFavorite(id: Helmet['id'], isFavorite: boolean): Promise<Helmet> {
+    const result = await HelmetModel.findByIdAndUpdate(
+      id,
+      { isFavorite },
+      { new: true }
+    ).exec();
+
+    if (!result) throw new HttpError(404, 'Not Found', 'Update not possible');
+
     return result;
   }
 
@@ -61,6 +76,11 @@ export class HelmetsMongoRepo implements Repository<Helmet> {
   async getHelmetsByCategory(category: string): Promise<Helmet[]> {
     const helmetsInCategory = await HelmetModel.find({ category }).exec();
     return helmetsInCategory;
+  }
+
+  async getHelmetsByFavorite(): Promise<Helmet[]> {
+    const favoriteHelmets = await HelmetModel.find({ isFavorite: true }).exec();
+    return favoriteHelmets;
   }
 
   async getInitialCategories(): Promise<string[]> {
