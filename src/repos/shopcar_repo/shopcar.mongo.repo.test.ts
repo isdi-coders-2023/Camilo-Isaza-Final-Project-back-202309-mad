@@ -1,7 +1,6 @@
 import { ShopCarMongoRepo } from './shopcar.mongo.repo';
 import { ShopCarModel } from './shopcar.mongo.model';
-/* Import { HttpError } from '../../types/http.error';
- */ import { ShopCar } from '../../entities/shop_car';
+import { ShopCar } from '../../entities/shop_car';
 import { User } from '../../entities/user';
 import { UsersMongoRepo } from '../users_repo/users.mongo.repo';
 import { HttpError } from '../../types/http.error';
