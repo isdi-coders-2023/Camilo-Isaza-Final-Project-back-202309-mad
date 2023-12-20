@@ -2,12 +2,6 @@ import { Schema, model } from 'mongoose';
 import { Helmet } from '../../entities/helmet';
 
 const helmetsSchema = new Schema<Helmet>({
-  orders: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Orders',
-    },
-  ],
   reference: {
     type: String,
     required: true,

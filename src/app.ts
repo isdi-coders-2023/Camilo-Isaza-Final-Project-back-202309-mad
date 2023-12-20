@@ -7,6 +7,7 @@ import { errorMiddleware } from './middleware/error.middleware.js';
 
 import { usersRouter } from './router/users.router.js';
 import { helmetsRouter } from './router/helmets.router.js';
+import { shopCarRouter } from './router/shop.car.router.js';
 
 const debug = createDebug('W7E:app');
 
@@ -21,5 +22,6 @@ app.use(express.static('public'));
 
 app.use('/users', usersRouter);
 app.use('/helmets', helmetsRouter);
+app.use('/shopcar', shopCarRouter);
 
 app.use(errorMiddleware);
