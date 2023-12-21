@@ -14,6 +14,7 @@ export default {
     'src/index.ts',
     'src/router/users.router.ts',
     'src/router/helmets.router.ts',
+    'src/router/shop.car.router.ts',
     'src/services/db.connect.ts',
   ],
 };
